@@ -52,7 +52,18 @@ class _PastilleState extends State<Pastille> {
               //borderRadius: BorderRadius.circular(20.0),
               shape: BoxShape.circle,
               boxShadow: widget.highLight
-                  ? null
+                  ? [
+                      BoxShadow(
+                          color: widget.color.shade100,
+                          offset: const Offset(-1, -1),
+                          blurRadius: 5.0,
+                          spreadRadius: 3.0),
+                      BoxShadow(
+                          color: widget.color.shade800,
+                          offset: const Offset(1, 1),
+                          blurRadius: 5.0,
+                          spreadRadius: 3.0)
+                    ]
                   : [
                       const BoxShadow(
                           color: Colors.white,
