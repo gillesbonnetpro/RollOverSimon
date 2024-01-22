@@ -17,17 +17,17 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   void initState() {
-    pointNb = 4;
+    pointNb = 8;
 
     colorList = [
       Colors.blue,
-      Colors.brown,
-      Colors.yellow,
-      Colors.deepOrange,
       Colors.pink,
+      Colors.yellow,
       Colors.teal,
+      Colors.brown,
+      Colors.deepOrange,
       Colors.purple,
-      Colors.cyan,
+      Colors.green,
       Colors.indigo,
       Colors.lightBlue,
     ];
@@ -60,48 +60,28 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.shortestSide * 0.75;
-
+    double boardWidth = MediaQuery.of(context).size.shortestSide * 0.75;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        Expanded(
-          child: Container(
-            constraints: BoxConstraints(maxWidth: size),
-            child: Row(
-              children: [
-                Slider(
-                  value: pointNb.toDouble(),
-                  min: 4,
-                  max: 10,
-                  divisions: 7,
-                  label: pointNb.toString(),
-                  onChanged: (value) {
-                    setState(() {
-                      pointNb = value.toInt();
-                      initPastilles();
-                    });
-                  },
-                ),
-                IconButton(
-                    onPressed: () => setState(() {}),
-                    icon: const Icon(Icons.check))
-              ],
-            ),
-          ),
-        ),
-        SizedBox(
-          height: size,
-          width: size,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              constraints: BoxConstraints(maxHeight: size),
-              decoration: const BoxDecoration(
+        Center(
+          child: SizedBox(
+            height: boardWidth,
+            width: boardWidth,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                constraints:
+                    BoxConstraints(maxHeight: boardWidth, maxWidth: boardWidth),
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Color.fromARGB(255, 208, 207, 207)),
-              child: Stack(
-                children: pastList,
+                  color: Color.fromARGB(255, 208, 207, 207),
+                ),
+                child: Stack(
+                  children: pastList,
+                ),
               ),
             ),
           ),
