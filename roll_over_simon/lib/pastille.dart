@@ -29,9 +29,30 @@ class _PastilleState extends State<Pastille> {
   }
 
   @override
+  void didUpdateWidget(covariant Pastille oldWidget) {
+    if (widget.highLight != oldWidget.highLight) {
+      setState(() {
+        widget.highLight;
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+// make the pastille highlighted during specified duration
+  void makeHighLight(Duration duration) {
+    setState(() {
+      widget.highLight = true;
+    });
+    Future.delayed(duration).then(
+      (value) => setState(() {
+        widget.highLight = false;
+      }),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.shortestSide / widget.sizeFactor;
-    print('${widget.posX} / ${widget.posY}');
 
     return GestureDetector(
       onTapDown: (details) => setState(() {
