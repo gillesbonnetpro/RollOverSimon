@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roll_over_simon/pastille.dart';
 import 'dart:math' as math;
+import 'package:rxdart/rxdart.dart';
 
 class Referee {
   static final Referee _singleton = Referee._internal();
