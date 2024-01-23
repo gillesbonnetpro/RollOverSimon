@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:roll_over_simon/pastille.dart';
+import 'package:roll_over_simon/ui_data.dart';
 import 'dart:math' as math;
 import 'package:rxdart/rxdart.dart';
 
@@ -10,7 +13,10 @@ class Referee {
     return _singleton;
   }
 
-  Referee._internal();
+  Referee._internal() {
+    _refSequence = [0, 1, 2, 3, 0, 1, 2, 3];
+    _initGame();
+  }
 
   final List<MaterialColor> _colorList = [
     Colors.blue,
@@ -25,13 +31,30 @@ class Referee {
     Colors.lightBlue,
   ];
 
+  // variables
   final int _pastNb = 4;
   Turn _turn = Turn.referee;
-  final List<int> _refSequence = [];
+  List<int> _refSequence = [];
   final List<Pastille> _pastList = [];
+  BehaviorSubject<UiData> uiData_BS = BehaviorSubject();
+
+  // getters
   List<Pastille> get pastList => _pastList;
   List<int> get sequence => _refSequence;
   Turn get turn => _turn;
+  Stream<UiData> get uiDataStream => uiData_BS.stream;
+
+  void _initGame() {
+// set data
+    print('start init');
+    UiData _uiData = UiData(
+      turn: Turn.referee,
+      sequence: _refSequence,
+      pastList: getPastList(null),
+    );
+    uiData_BS.add(_uiData);
+    print('end init');
+  }
 
   void addSequence() {
     while (_refSequence.length < 10) {
@@ -52,8 +75,9 @@ class Referee {
     }
   }
 
-  List<Pastille> getPastList() {
-    print('PALSIT');
+  List<Pastille> getPastList(int? highlighted) {
+    print('PASlIsT $highlighted');
+
     _pastList.clear();
     double pi2 = math.pi * 2;
     double portion = pi2 / _pastNb;
@@ -67,12 +91,45 @@ class Referee {
           posX: cos,
           posY: sin,
           sizeFactor: _pastNb,
-          highLight: false,
+          highLight: highlighted == i,
         ),
       );
       angle += portion;
     }
     return _pastList;
+  }
+
+  void feedRefBoarder() {
+    print('start feed');
+    UiData _uiData;
+    int i = 0;
+    Timer.periodic(const Duration(seconds: 2), (timer) { 
+      print('$i + 2sec');
+      i++;
+      if (i > _refSequence.length){
+        
+      }
+    });
+
+
+
+
+
+    
+    }
+
+    /* for (var number in _refSequence) {
+      print('appel $number');
+      Future.delayed(const Duration(seconds: 2), () {
+        _uiData = UiData(
+          turn: Turn.player,
+          sequence: _refSequence,
+          pastList: getPastList(number),
+        );
+        print('envoi $number dans le stream');
+        uiData_BS.add(_uiData);
+      });
+    } */
   }
 }
 

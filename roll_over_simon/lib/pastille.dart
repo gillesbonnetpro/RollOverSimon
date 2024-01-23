@@ -38,7 +38,7 @@ class _PastilleState extends State<Pastille> {
     super.didUpdateWidget(oldWidget);
   }
 
-// make the pastille highlighted during specified duration
+/* // make the pastille highlighted during specified duration
   void makeHighLight(Duration duration) {
     setState(() {
       widget.highLight = true;
@@ -48,7 +48,7 @@ class _PastilleState extends State<Pastille> {
         widget.highLight = false;
       }),
     );
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
