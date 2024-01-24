@@ -41,7 +41,7 @@ class _PastilleState extends State<Pastille> {
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.shortestSide / widget.sizeFactor;
-    print('${widget.color} / ${widget.highLight}');
+    // print('${widget.color} / ${widget.highLight}');
 
     return GestureDetector(
       onTapDown: (details) => setState(() {
@@ -55,46 +55,48 @@ class _PastilleState extends State<Pastille> {
       child: Align(
         alignment: Alignment(widget.posX, widget.posY),
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 100),
           width: size,
           height: size,
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           decoration: BoxDecoration(
-              color: darkColors,
-              //borderRadius: BorderRadius.circular(20.0),
-              shape: BoxShape.circle,
-              boxShadow: widget.highLight
-                  ? [
-                      BoxShadow(
-                          color: widget.color.shade100,
-                          offset: const Offset(-1, -1),
-                          blurRadius: 5.0,
-                          spreadRadius: 3.0),
-                      BoxShadow(
-                          color: widget.color.shade800,
-                          offset: const Offset(1, 1),
-                          blurRadius: 5.0,
-                          spreadRadius: 3.0)
-                    ]
-                  : [
-                      const BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(-3, -3),
-                          blurRadius: 10.0,
-                          spreadRadius: 3.0),
-                      BoxShadow(
-                          color: darkColors,
-                          offset: const Offset(3, 3),
-                          blurRadius: 10.0,
-                          spreadRadius: 3.0)
-                    ],
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    widget.highLight ? lightColors : darkColors,
-                    widget.highLight ? darkColors : lightColors
-                  ])),
+            color: widget.highLight ? widget.color.shade400 : widget.color,
+            //borderRadius: BorderRadius.circular(20.0),
+            shape: BoxShape.circle,
+            boxShadow: widget.highLight
+                ? [
+                    BoxShadow(
+                        color: widget.color.shade100,
+                        offset: const Offset(-1, -1),
+                        blurRadius: 5.0,
+                        spreadRadius: 7.0),
+                    BoxShadow(
+                        color: widget.color.shade800,
+                        offset: const Offset(1, 1),
+                        blurRadius: 5.0,
+                        spreadRadius: 7.0)
+                  ]
+                : [
+                    const BoxShadow(
+                        color: Color.fromARGB(255, 208, 207, 207),
+                        offset: Offset(-3, -3),
+                        blurRadius: 10.0,
+                        spreadRadius: 3.0),
+                    BoxShadow(
+                        color: darkColors,
+                        offset: const Offset(3, 3),
+                        blurRadius: 10.0,
+                        spreadRadius: 3.0)
+                  ],
+            /*  gradient: LinearGradient(
+                begin:
+                    widget.highLight ? Alignment.centerLeft : Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  widget.highLight ? lightColors : darkColors,
+                  widget.highLight ? darkColors : lightColors
+                ]), */
+          ),
         ),
       ),
     );
