@@ -4,7 +4,11 @@ import 'package:roll_over_simon/pastille.dart';
 import 'package:roll_over_simon/referee.dart';
 
 class UiData {
-  UiData({required this.turn, this.sequence, required this.pastList}) {
+  UiData(
+      {required this.turn,
+      this.sequence,
+      required this.pastList,
+      required this.text}) {
     assert(
         (turn == Turn.referee && sequence!.isNotEmpty) || turn != Turn.referee);
   }
@@ -12,6 +16,7 @@ class UiData {
   late Turn turn;
   List<int>? sequence;
   late List<Pastille> pastList;
+  late String text;
 
   UiData.fromJson(Map<String, dynamic> json) {
     turn = Turn.values.firstWhere((value) => value.toString() == json['turn']);

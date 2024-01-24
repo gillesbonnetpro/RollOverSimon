@@ -55,17 +55,25 @@ class Referee {
   }
 
   Future<void> addSequence() async {
-    await Future.delayed(const Duration(milliseconds: 1500), () {});
     if (_refSequence.length < 5 || _pastNb > 9) {
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
       print('ref    $_refSequence');
+      Future.delayed(const Duration(seconds: 3), () {
+        feedRefBoarder();
+      });
     } else {
       _pastNb++;
       _plaSequence.clear();
       _refSequence.clear();
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
+      uiData_BS.add(UiData(
+          turn: Turn.wait,
+          pastList: getPastList(null),
+          text: 'Changement de niveau'));
+      Future.delayed(const Duration(seconds: 10), () {
+        feedRefBoarder();
+      });
     }
-    feedRefBoarder();
   }
 
   Future<void> feedRefBoarder() async {
@@ -76,17 +84,17 @@ class Referee {
     while (i < _refSequence.length) {
       //print('$i / ${_refSequence[i]}');
       uiData = UiData(
-        turn: _turn,
-        sequence: _refSequence,
-        pastList: getPastList(_refSequence[i]),
-      );
+          turn: _turn,
+          sequence: _refSequence,
+          pastList: getPastList(_refSequence[i]),
+          text: 'Attention !!!');
       uiData_BS.add(uiData);
       await Future.delayed(Duration(milliseconds: speed), () {
         uiData = UiData(
-          turn: _turn,
-          sequence: _refSequence,
-          pastList: getPastList(null),
-        );
+            turn: _turn,
+            sequence: _refSequence,
+            pastList: getPastList(null),
+            text: '');
         uiData_BS.add(uiData);
         i++;
       });
@@ -94,10 +102,10 @@ class Referee {
     }
     _turn = Turn.player;
     uiData = UiData(
-      turn: _turn,
-      sequence: null,
-      pastList: getPastList(null),
-    );
+        turn: _turn,
+        sequence: null,
+        pastList: getPastList(null),
+        text: 'A vous de jouer');
     uiData_BS.add(uiData);
     // print('end feed');
   }
@@ -114,10 +122,10 @@ class Referee {
         _refSequence.clear();
         _plaSequence.clear();
         UiData uiData = UiData(
-          turn: _turn,
-          sequence: null,
-          pastList: getPastList(null),
-        );
+            turn: _turn,
+            sequence: null,
+            pastList: getPastList(null),
+            text: 'PERDU');
         uiData_BS.add(uiData);
       } else {
         // print('bonne réponse');
@@ -158,4 +166,4 @@ class Referee {
 }
 
 // gère le tour de jeu
-enum Turn { referee, player, over, begin }
+enum Turn { referee, player, over, wait }

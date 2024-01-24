@@ -18,6 +18,7 @@ class _PlayerBoardState extends State<PlayerBoard> {
   @override
   void initState() {
     rotateWanted = false;
+    print('text ${widget.data.text}');
     super.initState();
   }
 
@@ -53,14 +54,9 @@ class _PlayerBoardState extends State<PlayerBoard> {
           ],
         ),
         Center(
-          child: FittedBox(
-            child: Text(
-                widget.data.turn == Turn.referee
-                    ? 'Regardez-bien'
-                    : widget.data.turn == Turn.player
-                        ? 'A vous de jouer'
-                        : 'PERDU !!!',
-                style: TextStyle(fontSize: 50)),
+          child: Text(
+            widget.data.text,
+            style: TextStyle(fontSize: 50),
           ),
         ),
         Center(
