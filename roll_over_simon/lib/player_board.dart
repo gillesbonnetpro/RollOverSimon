@@ -50,8 +50,14 @@ class _PlayerBoardState extends State<PlayerBoard> {
                   shape: BoxShape.circle,
                   color: Color.fromARGB(255, 208, 207, 207),
                 ),
-                child: Stack(
-                  children: widget.data.pastList,
+                child: AnimatedRotation(
+                  duration: const Duration(seconds: 1),
+                  turns: widget.data.turn == Turn.referee
+                      ? widget.data.sequence!.length.toDouble()
+                      : 0,
+                  child: Stack(
+                    children: widget.data.pastList,
+                  ),
                 ),
               ),
             ),
