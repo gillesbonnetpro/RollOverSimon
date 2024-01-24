@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:roll_over_simon/pastille.dart';
 import 'package:roll_over_simon/referee.dart';
 import 'package:roll_over_simon/ui_data.dart';
 
-class PlayerBoard extends StatelessWidget {
-  const PlayerBoard({super.key});
+class PlayerBoard extends StatefulWidget {
+  PlayerBoard({super.key, required this.data});
+
+  final UiData data;
+
+  @override
+  State<PlayerBoard> createState() => _PlayerBoardState();
+}
+
+class _PlayerBoardState extends State<PlayerBoard> {
+  @override
+  void initState() {
+    if (widget.data.turn == Turn.referee) {
+      Referee().feedRefBoarder();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +26,16 @@ class PlayerBoard extends StatelessWidget {
         stream: Referee().uiDataStream,
         builder: (context, snapshot) {
           return snapshot.hasData
-              ? Stack(
-                  children: snapshot.data!.pastList,
+              ? Column(
+                  children: [
+                    Text('${widget.data.turn}'),
+                    Text('${widget.data.pastList}'),
+                    Expanded(
+                      child: Stack(
+                        children: snapshot.data!.pastList,
+                      ),
+                    ),
+                  ],
                 )
               : const Center(
                   child: CircularProgressIndicator(),

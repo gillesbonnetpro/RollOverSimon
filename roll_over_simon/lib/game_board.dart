@@ -56,11 +56,7 @@ class _GameBoardState extends State<GameBoard> {
                           shape: BoxShape.circle,
                           color: Color.fromARGB(255, 208, 207, 207),
                         ),
-                        child: data.turn == Turn.player
-                            ? const PlayerBoard()
-                            : RefereeBoard(
-                                sequence: data.sequence!,
-                              ),
+                        child: PlayerBoard(data: snapshot.data!),
                       ),
                     ),
                   ),

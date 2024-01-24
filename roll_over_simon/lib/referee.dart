@@ -99,26 +99,32 @@ class Referee {
     return _pastList;
   }
 
-  void feedRefBoarder() {
+  Future<void> feedRefBoarder() async {
     print('start feed');
     UiData _uiData;
     int i = 0;
-    Timer.periodic(const Duration(seconds: 2), (timer) { 
-      print('$i + 2sec');
-      i++;
-      if (i > _refSequence.length){
-        
-      }
-    });
-
-
-
-
-
-    
+    while (i < _refSequence.length) {
+      await Future.delayed(const Duration(seconds: 2), () {
+        print('$i / ${_refSequence[i]}');
+        _uiData = UiData(
+          turn: Turn.referee,
+          sequence: _refSequence,
+          pastList: getPastList(_refSequence[i]),
+        );
+        uiData_BS.add(_uiData);
+        i++;
+      });
     }
+    _uiData = UiData(
+      turn: Turn.player,
+      sequence: null,
+      pastList: getPastList(null),
+    );
+    uiData_BS.add(_uiData);
+    print('end feed');
+  }
 
-    /* for (var number in _refSequence) {
+  /* for (var number in _refSequence) {
       print('appel $number');
       Future.delayed(const Duration(seconds: 2), () {
         _uiData = UiData(
@@ -130,7 +136,6 @@ class Referee {
         uiData_BS.add(_uiData);
       });
     } */
-  }
 }
 
 // gère le tour de jeu
