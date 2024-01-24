@@ -33,7 +33,7 @@ class Referee {
 
   // variables
   final int _pastNb = 4;
-  Turn _turn = Turn.referee;
+  //Turn _turn = Turn.referee;
   List<int> _refSequence = [];
   final List<Pastille> _pastList = [];
   BehaviorSubject<UiData> uiData_BS = BehaviorSubject();
@@ -41,7 +41,7 @@ class Referee {
   // getters
   List<Pastille> get pastList => _pastList;
   List<int> get sequence => _refSequence;
-  Turn get turn => _turn;
+  //Turn get turn => _turn;
   Stream<UiData> get uiDataStream => uiData_BS.stream;
 
   void _initGame() {
