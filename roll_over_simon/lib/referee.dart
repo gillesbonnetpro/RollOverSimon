@@ -14,7 +14,7 @@ class Referee {
   }
 
   Referee._internal() {
-    _initGame();
+    initGame();
   }
 
   final List<MaterialColor> _colorList = [
@@ -45,7 +45,7 @@ class Referee {
 
 // --------------------- SECTION REFEREE
 
-  void _initGame() {
+  void initGame() {
     _turn = Turn.referee;
     _refSequence = [];
     _plaSequence = [];
@@ -54,7 +54,8 @@ class Referee {
     addSequence();
   }
 
-  void addSequence() {
+  Future<void> addSequence() async {
+    await Future.delayed(const Duration(milliseconds: 1500), () {});
     if (_refSequence.length < 5 || _pastNb > 9) {
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
       print('ref    $_refSequence');
@@ -104,23 +105,27 @@ class Referee {
 // --------------------- SECTION PLAYER
 
   void playerAttempt(int attempt) {
-    _plaSequence.add(attempt);
-    print('player $_plaSequence');
+    if (_refSequence.isNotEmpty) {
+      _plaSequence.add(attempt);
+      print('player $_plaSequence');
 
-    if (_plaSequence.last != _refSequence[_plaSequence.length - 1]) {
-      _turn = Turn.over;
-      UiData uiData = UiData(
-        turn: _turn,
-        sequence: null,
-        pastList: getPastList(null),
-      );
-      uiData_BS.add(uiData);
-    } else {
-      // print('bonne réponse');
-      if (_plaSequence.length == _refSequence.length) {
+      if (_plaSequence.last != _refSequence[_plaSequence.length - 1]) {
+        _turn = Turn.over;
+        _refSequence.clear();
         _plaSequence.clear();
-        _turn = Turn.referee;
-        addSequence();
+        UiData uiData = UiData(
+          turn: _turn,
+          sequence: null,
+          pastList: getPastList(null),
+        );
+        uiData_BS.add(uiData);
+      } else {
+        // print('bonne réponse');
+        if (_plaSequence.length == _refSequence.length) {
+          _plaSequence.clear();
+          _turn = Turn.referee;
+          addSequence();
+        }
       }
     }
   }
@@ -153,4 +158,4 @@ class Referee {
 }
 
 // gère le tour de jeu
-enum Turn { referee, player, over }
+enum Turn { referee, player, over, begin }

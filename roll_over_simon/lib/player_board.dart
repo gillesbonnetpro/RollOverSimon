@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roll_over_simon/referee.dart';
 import 'package:roll_over_simon/ui_data.dart';
+import 'dart:math' as math;
 
 class PlayerBoard extends StatefulWidget {
   const PlayerBoard({super.key, required this.data});
@@ -12,11 +13,11 @@ class PlayerBoard extends StatefulWidget {
 }
 
 class _PlayerBoardState extends State<PlayerBoard> {
+  late bool rotateWanted;
+
   @override
   void initState() {
-    /*    if (widget.data.turn == Turn.referee) {
-      Referee().feedRefBoarder();
-    } */
+    rotateWanted = false;
     super.initState();
   }
 
@@ -28,14 +29,39 @@ class _PlayerBoardState extends State<PlayerBoard> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: ElevatedButton(
+                child: const Text('RollOver Game'),
+                onPressed: () => setState(() {
+                  rotateWanted = true;
+                  Referee().initGame();
+                }),
+              ),
+            ),
+            Flexible(
+              child: ElevatedButton(
+                child: const Text('Classic Game'),
+                onPressed: () => setState(() {
+                  rotateWanted = false;
+                  Referee().initGame();
+                }),
+              ),
+            )
+          ],
+        ),
         Center(
-          child: Text(
-              widget.data.turn == Turn.referee
-                  ? 'Regardez-bien'
-                  : widget.data.turn == Turn.player
-                      ? 'A vous de jouer'
-                      : 'PERDU !!!',
-              style: TextStyle(fontSize: 50)),
+          child: FittedBox(
+            child: Text(
+                widget.data.turn == Turn.referee
+                    ? 'Regardez-bien'
+                    : widget.data.turn == Turn.player
+                        ? 'A vous de jouer'
+                        : 'PERDU !!!',
+                style: TextStyle(fontSize: 50)),
+          ),
         ),
         Center(
           child: SizedBox(
@@ -51,9 +77,10 @@ class _PlayerBoardState extends State<PlayerBoard> {
                   color: Color.fromARGB(255, 208, 207, 207),
                 ),
                 child: AnimatedRotation(
+                  curve: Curves.bounceOut,
                   duration: const Duration(seconds: 1),
-                  turns: widget.data.turn == Turn.referee
-                      ? widget.data.sequence!.length.toDouble()
+                  turns: widget.data.turn == Turn.player && rotateWanted
+                      ? math.Random.secure().nextDouble()
                       : 0,
                   child: Stack(
                     children: widget.data.pastList,
