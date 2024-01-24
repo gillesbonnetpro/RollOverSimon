@@ -6,7 +6,7 @@ import 'package:roll_over_simon/referee.dart';
 class UiData {
   UiData({required this.turn, this.sequence, required this.pastList}) {
     assert(
-        (turn == Turn.referee && sequence!.isNotEmpty) || turn == Turn.player);
+        (turn == Turn.referee && sequence!.isNotEmpty) || turn != Turn.referee);
   }
 
   late Turn turn;

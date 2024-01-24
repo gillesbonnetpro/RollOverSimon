@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:roll_over_simon/referee.dart';
 
 class Pastille extends StatefulWidget {
   Pastille(
@@ -7,12 +8,14 @@ class Pastille extends StatefulWidget {
       required this.posX,
       required this.posY,
       required this.sizeFactor,
-      required this.highLight});
+      required this.highLight,
+      required this.id});
   MaterialColor color;
   double posX;
   double posY;
   int sizeFactor;
   bool highLight;
+  int id;
 
   @override
   State<Pastille> createState() => _PastilleState();
@@ -30,11 +33,6 @@ class _PastilleState extends State<Pastille> {
 
   @override
   void didUpdateWidget(covariant Pastille oldWidget) {
-    /*    if (widget.highLight != oldWidget.highLight) {
-      setState(() {
-        widget.highLight;
-      });
-    } */
     super.didUpdateWidget(oldWidget);
   }
 
@@ -47,6 +45,7 @@ class _PastilleState extends State<Pastille> {
       onTapDown: (details) => setState(() {
         widget.highLight = true;
         lightColors = widget.color.shade900;
+        Referee().playerAttempt(widget.id);
       }),
       onTapUp: (details) => setState(() {
         widget.highLight = false;

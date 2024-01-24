@@ -14,9 +14,9 @@ class PlayerBoard extends StatefulWidget {
 class _PlayerBoardState extends State<PlayerBoard> {
   @override
   void initState() {
-    if (widget.data.turn == Turn.referee) {
+    /*    if (widget.data.turn == Turn.referee) {
       Referee().feedRefBoarder();
-    }
+    } */
     super.initState();
   }
 
@@ -32,7 +32,9 @@ class _PlayerBoardState extends State<PlayerBoard> {
           child: Text(
               widget.data.turn == Turn.referee
                   ? 'Regardez-bien'
-                  : 'A vous de jouer',
+                  : widget.data.turn == Turn.player
+                      ? 'A vous de jouer'
+                      : 'PERDU !!!',
               style: TextStyle(fontSize: 50)),
         ),
         Center(

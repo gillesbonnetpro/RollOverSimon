@@ -31,10 +31,11 @@ class Referee {
   ];
 
   // variables
-  int _pastNb = 4;
-  Turn _turn = Turn.referee;
-  final List<int> _refSequence = [1, 1, 1];
-  final List<Pastille> _pastList = [];
+  late int _pastNb;
+  late Turn _turn;
+  late List<int> _refSequence;
+  late List<int> _plaSequence;
+  late List<Pastille> _pastList;
   BehaviorSubject<UiData> uiData_BS = BehaviorSubject();
 
   // getters
@@ -42,28 +43,91 @@ class Referee {
   List<int> get sequence => _refSequence;
   Stream<UiData> get uiDataStream => uiData_BS.stream;
 
+// --------------------- SECTION REFEREE
+
   void _initGame() {
-    switch (_turn) {
-      case Turn.referee:
-        addSequence();
-        feedRefBoarder();
-      case Turn.player:
-        null;
-    }
+    _turn = Turn.referee;
+    _refSequence = [];
+    _plaSequence = [];
+    _pastList = [];
+    _pastNb = 4;
+    addSequence();
   }
 
   void addSequence() {
-    if (_refSequence.length < 10 || _pastNb > 9) {
+    if (_refSequence.length < 5 || _pastNb > 9) {
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
+      print('ref    $_refSequence');
     } else {
       _pastNb++;
+      _plaSequence.clear();
       _refSequence.clear();
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
     }
+    feedRefBoarder();
   }
 
+  Future<void> feedRefBoarder() async {
+    int speed = 1000 - (_refSequence.length * _pastNb);
+    //print('start feed, seq length ${_refSequence.length}, speed $speed');
+    UiData uiData;
+    int i = 0;
+    while (i < _refSequence.length) {
+      //print('$i / ${_refSequence[i]}');
+      uiData = UiData(
+        turn: _turn,
+        sequence: _refSequence,
+        pastList: getPastList(_refSequence[i]),
+      );
+      uiData_BS.add(uiData);
+      await Future.delayed(Duration(milliseconds: speed), () {
+        uiData = UiData(
+          turn: _turn,
+          sequence: _refSequence,
+          pastList: getPastList(null),
+        );
+        uiData_BS.add(uiData);
+        i++;
+      });
+      await Future.delayed(Duration(milliseconds: speed ~/ 2), () {});
+    }
+    _turn = Turn.player;
+    uiData = UiData(
+      turn: _turn,
+      sequence: null,
+      pastList: getPastList(null),
+    );
+    uiData_BS.add(uiData);
+    // print('end feed');
+  }
+
+// --------------------- SECTION PLAYER
+
+  void playerAttempt(int attempt) {
+    _plaSequence.add(attempt);
+    print('player $_plaSequence');
+
+    if (_plaSequence.last != _refSequence[_plaSequence.length - 1]) {
+      _turn = Turn.over;
+      UiData uiData = UiData(
+        turn: _turn,
+        sequence: null,
+        pastList: getPastList(null),
+      );
+      uiData_BS.add(uiData);
+    } else {
+      // print('bonne réponse');
+      if (_plaSequence.length == _refSequence.length) {
+        _plaSequence.clear();
+        _turn = Turn.referee;
+        addSequence();
+      }
+    }
+  }
+
+// --------------------- SECTION COMMON
   List<Pastille> getPastList(int? highlighted) {
-    print('PASlIsT $highlighted');
+    // print('PASlIsT $highlighted');
 
     _pastList.clear();
     double pi2 = math.pi * 2;
@@ -79,58 +143,14 @@ class Referee {
           posY: sin,
           sizeFactor: _pastNb,
           highLight: highlighted == i,
+          id: i,
         ),
       );
       angle += portion;
     }
     return _pastList;
   }
-
-  Future<void> feedRefBoarder() async {
-    print('start feed, seq length ${_refSequence.length}');
-    UiData uiData;
-    int i = 0;
-    while (i < _refSequence.length) {
-      print('$i / ${_refSequence[i]}');
-      uiData = UiData(
-        turn: _turn,
-        sequence: _refSequence,
-        pastList: getPastList(_refSequence[i]),
-      );
-      uiData_BS.add(uiData);
-      await Future.delayed(const Duration(seconds: 2), () {
-        uiData = UiData(
-          turn: _turn,
-          sequence: _refSequence,
-          pastList: getPastList(null),
-        );
-        uiData_BS.add(uiData);
-        i++;
-      });
-    }
-    _turn = Turn.player;
-    uiData = UiData(
-      turn: _turn,
-      sequence: null,
-      pastList: getPastList(null),
-    );
-    uiData_BS.add(uiData);
-    print('end feed');
-  }
-
-  /* for (var number in _refSequence) {
-      print('appel $number');
-      Future.delayed(const Duration(seconds: 2), () {
-        _uiData = UiData(
-          turn: Turn.player,
-          sequence: _refSequence,
-          pastList: getPastList(number),
-        );
-        print('envoi $number dans le stream');
-        uiData_BS.add(_uiData);
-      });
-    } */
 }
 
 // gère le tour de jeu
-enum Turn { referee, player }
+enum Turn { referee, player, over }
