@@ -46,9 +46,11 @@ class _PastilleState extends State<Pastille> {
     return GestureDetector(
       onTapDown: (details) => setState(() {
         widget.highLight = true;
+        lightColors = widget.color.shade900;
       }),
       onTapUp: (details) => setState(() {
         widget.highLight = false;
+        lightColors = widget.color;
       }),
       child: Align(
         alignment: Alignment(widget.posX, widget.posY),

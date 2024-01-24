@@ -29,7 +29,6 @@ class _PlayerBoardState extends State<PlayerBoard> {
               ? Column(
                   children: [
                     Text('${widget.data.turn}'),
-                    Text('${widget.data.pastList}'),
                     Expanded(
                       child: Stack(
                         children: snapshot.data!.pastList,
