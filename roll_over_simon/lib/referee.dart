@@ -67,9 +67,7 @@ class Referee {
       _refSequence.clear();
       _refSequence.add(math.Random.secure().nextInt(_pastNb));
       uiData_BS.add(UiData(
-          turn: Turn.wait,
-          pastList: getPastList(null),
-          text: 'Changement de niveau'));
+          turn: Turn.wait, pastNb: _pastNb, text: 'Changement de niveau'));
       Future.delayed(const Duration(seconds: 10), () {
         feedRefBoarder();
       });
@@ -86,15 +84,13 @@ class Referee {
       uiData = UiData(
           turn: _turn,
           sequence: _refSequence,
-          pastList: getPastList(_refSequence[i]),
+          pastNb: _pastNb,
+          highlighted: i,
           text: 'Attention !!!');
       uiData_BS.add(uiData);
       await Future.delayed(Duration(milliseconds: speed), () {
         uiData = UiData(
-            turn: _turn,
-            sequence: _refSequence,
-            pastList: getPastList(null),
-            text: '');
+            turn: _turn, sequence: _refSequence, pastNb: _pastNb, text: '');
         uiData_BS.add(uiData);
         i++;
       });
@@ -102,10 +98,7 @@ class Referee {
     }
     _turn = Turn.player;
     uiData = UiData(
-        turn: _turn,
-        sequence: null,
-        pastList: getPastList(null),
-        text: 'A vous de jouer');
+        turn: _turn, sequence: null, pastNb: _pastNb, text: 'A vous de jouer');
     uiData_BS.add(uiData);
     // print('end feed');
   }
@@ -121,11 +114,8 @@ class Referee {
         _turn = Turn.over;
         _refSequence.clear();
         _plaSequence.clear();
-        UiData uiData = UiData(
-            turn: _turn,
-            sequence: null,
-            pastList: getPastList(null),
-            text: 'PERDU');
+        UiData uiData =
+            UiData(turn: _turn, sequence: null, pastNb: _pastNb, text: 'PERDU');
         uiData_BS.add(uiData);
       } else {
         // print('bonne réponse');

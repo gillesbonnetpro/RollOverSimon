@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:roll_over_simon/pastille.dart';
 import 'package:roll_over_simon/referee.dart';
 import 'package:roll_over_simon/ui_data.dart';
 import 'dart:math' as math;
@@ -15,11 +16,50 @@ class PlayerBoard extends StatefulWidget {
 class _PlayerBoardState extends State<PlayerBoard> {
   late bool rotateWanted;
 
+  final List<MaterialColor> _colorList = [
+    Colors.blue,
+    Colors.pink,
+    Colors.yellow,
+    Colors.teal,
+    Colors.brown,
+    Colors.deepOrange,
+    Colors.purple,
+    Colors.green,
+    Colors.indigo,
+    Colors.lightBlue,
+  ];
+
   @override
   void initState() {
     rotateWanted = false;
     print('text ${widget.data.text}');
     super.initState();
+  }
+
+  List<Pastille> getPastList(int pastNb, int? highlighted) {
+    // print('PASlIsT $highlighted');
+    List<Pastille> pastList = [];
+
+    pastList.clear();
+    double pi2 = math.pi * 2;
+    double portion = pi2 / pastNb;
+    double angle = 0;
+    for (var i = 0; i < pastNb; i++) {
+      double cos = (math.cos(angle)) * 0.90;
+      double sin = (math.sin(angle)) * 0.90;
+      pastList.add(
+        Pastille(
+          color: _colorList[i],
+          posX: cos,
+          posY: sin,
+          sizeFactor: pastNb,
+          highLight: highlighted == i,
+          id: i,
+        ),
+      );
+      angle += portion;
+    }
+    return pastList;
   }
 
   @override
@@ -79,7 +119,8 @@ class _PlayerBoardState extends State<PlayerBoard> {
                       ? math.Random.secure().nextDouble()
                       : 0,
                   child: Stack(
-                    children: widget.data.pastList,
+                    children: getPastList(
+                        widget.data.pastNb, widget.data.highlighted),
                   ),
                 ),
               ),
