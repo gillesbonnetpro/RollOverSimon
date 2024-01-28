@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:roll_over_simon/referee.dart';
+import 'package:roll_over_simon/notifier.dart';
 
 class UiData {
   UiData(

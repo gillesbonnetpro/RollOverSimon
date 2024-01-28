@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/pastille.dart';
-import 'package:roll_over_simon/referee.dart';
-import 'package:roll_over_simon/ui_data.dart';
+import 'package:roll_over_simon/pastille_old.dart';
 import 'dart:math' as math;
 
 class PlayerBoard extends StatefulWidget {
-  const PlayerBoard({super.key, required this.data});
-
-  final UiData data;
+  const PlayerBoard({super.key});
 
   @override
   State<PlayerBoard> createState() => _PlayerBoardState();
 }
 
 class _PlayerBoardState extends State<PlayerBoard> {
-  late bool rotateWanted;
-
   final List<MaterialColor> _colorList = [
     Colors.blue,
     Colors.pink,
@@ -29,105 +25,50 @@ class _PlayerBoardState extends State<PlayerBoard> {
     Colors.lightBlue,
   ];
 
+  double rotationNb = 0;
+
   @override
   void initState() {
-    rotateWanted = false;
-    print('text ${widget.data.text}');
     super.initState();
   }
 
-  List<Pastille> getPastList(int pastNb, int? highlighted) {
-    // print('PASlIsT $highlighted');
+  List<Pastille> getPastList(int pastNb) {
     List<Pastille> pastList = [];
 
     pastList.clear();
-    double pi2 = math.pi * 2;
-    double portion = pi2 / pastNb;
-    double angle = 0;
+
     for (var i = 0; i < pastNb; i++) {
-      double cos = (math.cos(angle)) * 0.90;
-      double sin = (math.sin(angle)) * 0.90;
-      pastList.add(
-        Pastille(
-          color: _colorList[i],
-          posX: cos,
-          posY: sin,
-          sizeFactor: pastNb,
-          highLight: highlighted == i,
-          id: i,
-        ),
-      );
-      angle += portion;
+      pastList.add(Pastille(id: i, color: _colorList[i]));
     }
     return pastList;
   }
 
+  void increaseRotationNb() {
+    setState(() {
+      rotationNb += 1.25;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    double boardWidth = MediaQuery.of(context).size.shortestSide * 0.75;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: ElevatedButton(
-                child: const Text('RollOver Game'),
-                onPressed: () => setState(() {
-                  rotateWanted = true;
-                  Referee().initGame();
-                }),
-              ),
-            ),
-            Flexible(
-              child: ElevatedButton(
-                child: const Text('Classic Game'),
-                onPressed: () => setState(() {
-                  rotateWanted = false;
-                  Referee().initGame();
-                }),
-              ),
-            )
-          ],
-        ),
-        Center(
-          child: Text(
-            widget.data.text,
-            style: TextStyle(fontSize: 50),
-          ),
-        ),
-        Center(
-          child: SizedBox(
-            height: boardWidth,
-            width: boardWidth,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                constraints:
-                    BoxConstraints(maxHeight: boardWidth, maxWidth: boardWidth),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromARGB(255, 208, 207, 207),
-                ),
-                child: AnimatedRotation(
-                  curve: Curves.bounceOut,
+    return ValueListenableBuilder<int>(
+        valueListenable: pastNumberNotifier,
+        builder: (BuildContext context, int pastValue, child) {
+          print('rebuild past');
+          return ValueListenableBuilder<Turn>(
+              valueListenable: turnNotifier,
+              builder: (BuildContext context, Turn turnValue, child) {
+                List<Pastille> list = getPastList(pastValue);
+                return AnimatedRotation(
                   duration: const Duration(seconds: 1),
-                  turns: widget.data.turn == Turn.player && rotateWanted
-                      ? math.Random.secure().nextDouble()
+                  turns: turnValue == Turn.shuffle || turnValue == Turn.player
+                      ? math.Random.secure().nextDouble() + 0.25
                       : 0,
                   child: Stack(
-                    children: getPastList(
-                        widget.data.pastNb, widget.data.highlighted),
+                    children: list,
                   ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+                );
+              });
+        });
   }
 }

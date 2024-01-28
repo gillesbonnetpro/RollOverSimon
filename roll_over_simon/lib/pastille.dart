@@ -1,103 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:roll_over_simon/notifier.dart';
+import 'dart:math' as math;
+
 import 'package:roll_over_simon/referee.dart';
 
 class Pastille extends StatefulWidget {
-  Pastille(
-      {super.key,
-      required this.color,
-      required this.posX,
-      required this.posY,
-      required this.sizeFactor,
-      required this.highLight,
-      required this.id});
-  MaterialColor color;
-  double posX;
-  double posY;
-  int sizeFactor;
-  bool highLight;
-  int id;
+  const Pastille({super.key, required this.id, required this.color});
+  final int id;
+  final MaterialColor color;
 
   @override
   State<Pastille> createState() => _PastilleState();
 }
 
 class _PastilleState extends State<Pastille> {
-  var darkColors = Color(0xFF000A1F);
-  var lightColors;
+  late double id;
+  bool highlight = false;
+  double pi2 = math.pi * 2;
 
   @override
   void initState() {
-    lightColors = widget.color;
+    id = widget.id / 10;
     super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant Pastille oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.shortestSide / widget.sizeFactor;
-    // print('${widget.color} / ${widget.highLight}');
-
     return GestureDetector(
       onTapDown: (details) => setState(() {
-        widget.highLight = true;
-        lightColors = widget.color.shade900;
+        highlight = true;
+      }),
+      onTapUp: (details) {
+        setState(() {
+          highlight = false;
+        });
         Referee().playerAttempt(widget.id);
-      }),
-      onTapUp: (details) => setState(() {
-        widget.highLight = false;
-        lightColors = widget.color;
-      }),
-      child: Align(
-        alignment: Alignment(widget.posX, widget.posY),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          width: size,
-          height: size,
-          padding: const EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            color: widget.highLight ? widget.color.shade400 : widget.color,
-            //borderRadius: BorderRadius.circular(20.0),
-            shape: BoxShape.circle,
-            boxShadow: widget.highLight
-                ? [
-                    BoxShadow(
-                        color: widget.color.shade100,
-                        offset: const Offset(-1, -1),
-                        blurRadius: 5.0,
-                        spreadRadius: 7.0),
-                    BoxShadow(
-                        color: widget.color.shade800,
-                        offset: const Offset(1, 1),
-                        blurRadius: 5.0,
-                        spreadRadius: 7.0)
-                  ]
-                : [
-                    const BoxShadow(
-                        color: Color.fromARGB(255, 208, 207, 207),
-                        offset: Offset(-3, -3),
-                        blurRadius: 10.0,
-                        spreadRadius: 3.0),
-                    BoxShadow(
-                        color: darkColors,
-                        offset: const Offset(3, 3),
-                        blurRadius: 10.0,
-                        spreadRadius: 3.0)
-                  ],
-            /*  gradient: LinearGradient(
-                begin:
-                    widget.highLight ? Alignment.centerLeft : Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  widget.highLight ? lightColors : darkColors,
-                  widget.highLight ? darkColors : lightColors
-                ]), */
-          ),
-        ),
-      ),
+      },
+      child: ValueListenableBuilder<int>(
+          valueListenable: pastNumberNotifier,
+          builder: (BuildContext context, int pastValue, child) {
+            // print('rebuild past');
+            double portion = pi2 / pastValue;
+            double angle = portion * widget.id;
+            return ValueListenableBuilder<Turn>(
+                valueListenable: turnNotifier,
+                builder: (BuildContext context, Turn turnValue, child) {
+                  // print('rebuild turn');
+                  return AnimatedAlign(
+                    duration: const Duration(seconds: 1),
+                    alignment: turnValue == Turn.shuffle
+                        ? const Alignment(0, 0)
+                        : Alignment(
+                            (math.cos(angle)) * 0.90, (math.sin(angle)) * 0.90),
+                    child: ValueListenableBuilder<int?>(
+                        valueListenable: sequenceNotifier,
+                        builder: (BuildContext context, int? seqValue, child) {
+                          // print('rebuild seq');
+                          return Container(
+                              height: MediaQuery.of(context).size.shortestSide /
+                                  pastValue,
+                              width: MediaQuery.of(context).size.shortestSide /
+                                  pastValue,
+                              decoration: BoxDecoration(
+                                color: widget.color,
+                                shape: BoxShape.circle,
+                                boxShadow: seqValue == widget.id || highlight
+                                    ? [
+                                        BoxShadow(
+                                            color: widget.color.shade100,
+                                            offset: const Offset(-1, -1),
+                                            blurRadius: 5.0,
+                                            spreadRadius: 7.0),
+                                        BoxShadow(
+                                            color: widget.color.shade800,
+                                            offset: const Offset(1, 1),
+                                            blurRadius: 5.0,
+                                            spreadRadius: 7.0)
+                                      ]
+                                    : [
+                                        const BoxShadow(
+                                            color: Color.fromARGB(
+                                                255, 208, 207, 207),
+                                            offset: Offset(-3, -3),
+                                            blurRadius: 10.0,
+                                            spreadRadius: 3.0),
+                                        const BoxShadow(
+                                            color: Colors.black,
+                                            offset: Offset(3, 3),
+                                            blurRadius: 10.0,
+                                            spreadRadius: 3.0)
+                                      ],
+                              ));
+                        }),
+                  );
+                });
+          }),
     );
   }
 }

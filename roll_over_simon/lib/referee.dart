@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:roll_over_simon/pastille.dart';
+import 'package:roll_over_simon/notifier.dart';
+import 'package:roll_over_simon/pastille_old.dart';
 import 'package:roll_over_simon/ui_data.dart';
 import 'dart:math' as math;
 import 'package:rxdart/rxdart.dart';
@@ -35,13 +36,9 @@ class Referee {
   late Turn _turn;
   late List<int> _refSequence;
   late List<int> _plaSequence;
-  late List<Pastille> _pastList;
-  BehaviorSubject<UiData> uiData_BS = BehaviorSubject();
 
   // getters
-  List<Pastille> get pastList => _pastList;
   List<int> get sequence => _refSequence;
-  Stream<UiData> get uiDataStream => uiData_BS.stream;
 
 // --------------------- SECTION REFEREE
 
@@ -49,33 +46,46 @@ class Referee {
     _turn = Turn.referee;
     _refSequence = [];
     _plaSequence = [];
-    _pastList = [];
+
     _pastNb = 4;
+    pastNumberNotifier.value = _pastNb;
+
     addSequence();
   }
 
   Future<void> addSequence() async {
-    if (_refSequence.length < 5 || _pastNb > 9) {
-      _refSequence.add(math.Random.secure().nextInt(_pastNb));
-      print('ref    $_refSequence');
-      Future.delayed(const Duration(seconds: 3), () {
-        feedRefBoarder();
-      });
-    } else {
-      _pastNb++;
-      _plaSequence.clear();
-      _refSequence.clear();
-      _refSequence.add(math.Random.secure().nextInt(_pastNb));
-      uiData_BS.add(UiData(
-          turn: Turn.wait, pastNb: _pastNb, text: 'Changement de niveau'));
-      Future.delayed(const Duration(seconds: 10), () {
-        feedRefBoarder();
+    if (_refSequence.length > 2 && _pastNb < 9) {
+      print('LEVEL !!! ');
+      await Future.delayed(const Duration(seconds: 1), () {
+        _pastNb++;
+        pastNumberNotifier.value = (_pastNb);
+        _plaSequence.clear();
+        _refSequence.clear();
       });
     }
+    _refSequence.add(math.Random.secure().nextInt(_pastNb));
+    sendSeq();
+  }
+
+  Future<void> sendSeq() async {
+    int speed = 500 - (_refSequence.length * _pastNb);
+    if (_refSequence.length == 1) {
+      await Future.delayed(const Duration(seconds: 1), () {});
+    }
+    for (int i in _refSequence) {
+      await Future.delayed(
+          Duration(milliseconds: speed), () => sequenceNotifier.value = i);
+      await Future.delayed(Duration(milliseconds: speed ~/ 2),
+          () => sequenceNotifier.value = null);
+    }
+    print('ref    $_refSequence');
+    turnNotifier.value = Turn.shuffle;
+    await Future.delayed(
+        const Duration(seconds: 2), () => turnNotifier.value = Turn.player);
   }
 
   Future<void> feedRefBoarder() async {
-    int speed = 1000 - (_refSequence.length * _pastNb);
+    /*   int speed = 1000 - (_refSequence.length * _pastNb);
     //print('start feed, seq length ${_refSequence.length}, speed $speed');
     UiData uiData;
     int i = 0;
@@ -99,61 +109,38 @@ class Referee {
     _turn = Turn.player;
     uiData = UiData(
         turn: _turn, sequence: null, pastNb: _pastNb, text: 'A vous de jouer');
-    uiData_BS.add(uiData);
+    uiData_BS.add(uiData); */
     // print('end feed');
   }
 
 // --------------------- SECTION PLAYER
 
-  void playerAttempt(int attempt) {
+  Future<void> playerAttempt(int attempt) async {
     if (_refSequence.isNotEmpty) {
+      print('player clicked $attempt');
       _plaSequence.add(attempt);
       print('player $_plaSequence');
 
       if (_plaSequence.last != _refSequence[_plaSequence.length - 1]) {
-        _turn = Turn.over;
+        turnNotifier.value = Turn.over;
         _refSequence.clear();
         _plaSequence.clear();
-        UiData uiData =
-            UiData(turn: _turn, sequence: null, pastNb: _pastNb, text: 'PERDU');
-        uiData_BS.add(uiData);
       } else {
         // print('bonne réponse');
         if (_plaSequence.length == _refSequence.length) {
           _plaSequence.clear();
-          _turn = Turn.referee;
-          addSequence();
+          turnNotifier.value = Turn.referee;
+          await Future.delayed(const Duration(seconds: 1), () => addSequence());
         }
       }
     }
   }
 
 // --------------------- SECTION COMMON
-  List<Pastille> getPastList(int? highlighted) {
-    // print('PASlIsT $highlighted');
-
-    _pastList.clear();
-    double pi2 = math.pi * 2;
-    double portion = pi2 / _pastNb;
-    double angle = 0;
-    for (var i = 0; i < _pastNb; i++) {
-      double cos = (math.cos(angle)) * 0.90;
-      double sin = (math.sin(angle)) * 0.90;
-      _pastList.add(
-        Pastille(
-          color: _colorList[i],
-          posX: cos,
-          posY: sin,
-          sizeFactor: _pastNb,
-          highLight: highlighted == i,
-          id: i,
-        ),
-      );
-      angle += portion;
-    }
-    return _pastList;
+  void morePast() {
+    _pastNb++;
+    pastNumberNotifier.value = _pastNb;
   }
-}
 
-// gère le tour de jeu
-enum Turn { referee, player, over, wait }
+  void rotate() {}
+}
