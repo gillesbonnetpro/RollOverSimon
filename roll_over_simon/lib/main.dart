@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:roll_over_simon/game_board.dart';
 
 void main() {
@@ -11,6 +12,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          textTheme: GoogleFonts.moiraiOneTextTheme(),
+          buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme())),
       home: Scaffold(
         body: GameBoard(),
       ),

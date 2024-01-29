@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/player_board.dart';
 import 'package:roll_over_simon/referee.dart';
-
-import 'package:roll_over_simon/ui_data.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class GameBoard extends StatefulWidget {
   GameBoard({super.key});
@@ -53,7 +52,7 @@ class _GameBoardState extends State<GameBoard> {
             builder: (BuildContext context, Turn value, child) {
               return Text(
                 '$value',
-                style: Theme.of(context).textTheme.headline4,
+                style: GoogleFonts.moiraiOne(fontSize: 50),
               );
             },
           ),
