@@ -63,7 +63,9 @@ class _GameBoardState extends State<GameBoard> {
                                   child: Text('PERDU'),
                                 ),
                               ),
-                              Center(child: StartButton()),
+                              Center(
+                                child: StartButton(),
+                              ),
                             ],
                           );
                         case Turn.start:
