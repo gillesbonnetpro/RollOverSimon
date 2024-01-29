@@ -17,7 +17,7 @@ class MainApp extends StatelessWidget {
         textTheme: GoogleFonts.rubikBubblesTextTheme(),
         buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
       ),
-      home: Scaffold(
+      home: const Scaffold(
         body: GameBoard(),
       ),
     );

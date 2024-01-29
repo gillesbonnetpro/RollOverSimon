@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:roll_over_simon/game_plato.dart';
 import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/pastille.dart';
 import 'package:roll_over_simon/pastille_old.dart';
@@ -32,10 +33,8 @@ class _PlayerBoardState extends State<PlayerBoard> {
     super.initState();
   }
 
-  List<Pastille> getPastList(int pastNb, Turn turn) {
-    List<Pastille> pastList = [];
-
-    pastList.clear();
+  List<Widget> getPastList(int pastNb, Turn turn) {
+    List<Widget> pastList = [];
 
     for (var i = 0; i < pastNb; i++) {
       pastList.add(Pastille(id: i, color: _colorList[i]));
@@ -60,13 +59,18 @@ class _PlayerBoardState extends State<PlayerBoard> {
           return ValueListenableBuilder<Turn>(
               valueListenable: turnNotifier,
               builder: (BuildContext context, Turn turnValue, child) {
-                List<Pastille> list = getPastList(pastValue, turnValue);
-                return AnimatedRotation(
-                  duration: const Duration(seconds: 1),
-                  turns: turnValue == Turn.rotation ? 1 : 0,
-                  child: Stack(
-                    children: list,
-                  ),
+                List<Widget> list = getPastList(pastValue, turnValue);
+                return Stack(
+                  children: [
+                    const GamePlato(),
+                    AnimatedRotation(
+                      duration: const Duration(seconds: 1),
+                      turns: turnValue == Turn.rotation ? 1 : 0,
+                      child: Stack(
+                        children: list,
+                      ),
+                    ),
+                  ],
                 );
               });
         });
