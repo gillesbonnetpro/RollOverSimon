@@ -56,11 +56,13 @@ class Referee {
   Future<void> addSequence() async {
     if (_refSequence.length > 2 && _pastNb < 9) {
       print('LEVEL !!! ');
+      turnNotifier.value = Turn.rotation;
       await Future.delayed(const Duration(seconds: 1), () {
         _pastNb++;
         pastNumberNotifier.value = (_pastNb);
         _plaSequence.clear();
         _refSequence.clear();
+        turnNotifier.value = Turn.referee;
       });
     }
     _refSequence.add(math.Random.secure().nextInt(_pastNb));
@@ -79,38 +81,11 @@ class Referee {
           () => sequenceNotifier.value = null);
     }
     print('ref    $_refSequence');
-    turnNotifier.value = Turn.shuffle;
     await Future.delayed(
-        const Duration(seconds: 2), () => turnNotifier.value = Turn.player);
-  }
-
-  Future<void> feedRefBoarder() async {
-    /*   int speed = 1000 - (_refSequence.length * _pastNb);
-    //print('start feed, seq length ${_refSequence.length}, speed $speed');
-    UiData uiData;
-    int i = 0;
-    while (i < _refSequence.length) {
-      //print('$i / ${_refSequence[i]}');
-      uiData = UiData(
-          turn: _turn,
-          sequence: _refSequence,
-          pastNb: _pastNb,
-          highlighted: i,
-          text: 'Attention !!!');
-      uiData_BS.add(uiData);
-      await Future.delayed(Duration(milliseconds: speed), () {
-        uiData = UiData(
-            turn: _turn, sequence: _refSequence, pastNb: _pastNb, text: '');
-        uiData_BS.add(uiData);
-        i++;
-      });
-      await Future.delayed(Duration(milliseconds: speed ~/ 2), () {});
-    }
-    _turn = Turn.player;
-    uiData = UiData(
-        turn: _turn, sequence: null, pastNb: _pastNb, text: 'A vous de jouer');
-    uiData_BS.add(uiData); */
-    // print('end feed');
+        -const Duration(seconds: 2), () => turnNotifier.value = Turn.shuffle);
+    turnNotifier.value = Turn.player;
+    /* await Future.delayed(
+        const Duration(seconds: 2), () => turnNotifier.value = Turn.player); */
   }
 
 // --------------------- SECTION PLAYER

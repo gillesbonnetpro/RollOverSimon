@@ -7,4 +7,4 @@ final ValueNotifier<int?> sequenceNotifier = ValueNotifier<int?>(null);
 final ValueNotifier<Turn> turnNotifier = ValueNotifier<Turn>(Turn.start);
 
 // gère le tour de jeu
-enum Turn { referee, player, start, over, wait, shuffle }
+enum Turn { referee, player, start, over, wait, shuffle, rotation }

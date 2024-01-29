@@ -41,21 +41,15 @@ class _PlayerBoardState extends State<PlayerBoard> {
       pastList.add(Pastille(id: i, color: _colorList[i]));
     }
 
-    if (turn == Turn.player) {
+    /*  if (turn == Turn.player) {
       pastList.shuffle();
       pastList
           .map((past) => Pastille(
               id: past.id, color: past.color, listRank: pastList.indexOf(past)))
           .toList();
-    }
+    } */
     return pastList;
   }
-
-  /* void increaseRotationNb() {
-    setState(() {
-      rotationNb += 1.25;
-    });
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -69,10 +63,7 @@ class _PlayerBoardState extends State<PlayerBoard> {
                 List<Pastille> list = getPastList(pastValue, turnValue);
                 return AnimatedRotation(
                   duration: const Duration(seconds: 1),
-                  /* turns: turnValue == Turn.shuffle || turnValue == Turn.player
-                      ? math.Random.secure().nextDouble() + 0.25
-                      : 0, */
-                  turns: 0,
+                  turns: turnValue == Turn.rotation ? 1 : 0,
                   child: Stack(
                     children: list,
                   ),

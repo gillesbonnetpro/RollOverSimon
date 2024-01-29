@@ -7,6 +7,7 @@ import 'package:roll_over_simon/referee.dart';
 class Pastille extends StatefulWidget {
   const Pastille(
       {super.key, required this.id, required this.color, this.listRank});
+
   final int id;
   final MaterialColor color;
   final int? listRank;
@@ -28,28 +29,30 @@ class _PastilleState extends State<Pastille> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) => setState(() {
-        highlight = true;
-      }),
-      onTapUp: (details) {
-        setState(() {
-          highlight = false;
-        });
-        Referee().playerAttempt(widget.id);
-      },
-      child: ValueListenableBuilder<int>(
-          valueListenable: pastNumberNotifier,
-          builder: (BuildContext context, int pastValue, child) {
-            // print('rebuild past');
-            double portion = pi2 / pastValue;
-            double angle = portion * listRank;
-            return ValueListenableBuilder<Turn>(
-                valueListenable: turnNotifier,
-                builder: (BuildContext context, Turn turnValue, child) {
-                  // print('rebuild turn');
-                  return AnimatedAlign(
-                    duration: const Duration(seconds: 1),
+    return ValueListenableBuilder<int>(
+        valueListenable: pastNumberNotifier,
+        builder: (BuildContext context, int pastValue, child) {
+          // print('rebuild past');
+          double portion = pi2 / pastValue;
+          double angle = portion * listRank;
+          return ValueListenableBuilder<Turn>(
+              valueListenable: turnNotifier,
+              builder: (BuildContext context, Turn turnValue, child) {
+                // print('rebuild turn');
+                return GestureDetector(
+                  onTapDown: (details) => setState(() {
+                    highlight = true;
+                  }),
+                  onTapUp: (details) {
+                    setState(() {
+                      highlight = false;
+                    });
+                    turnValue == Turn.player
+                        ? Referee().playerAttempt(widget.id)
+                        : null;
+                  },
+                  child: AnimatedAlign(
+                    duration: const Duration(milliseconds: 200),
                     alignment: turnValue == Turn.shuffle
                         ? const Alignment(0, 0)
                         : Alignment(
@@ -58,16 +61,13 @@ class _PastilleState extends State<Pastille> {
                         valueListenable: sequenceNotifier,
                         builder: (BuildContext context, int? seqValue, child) {
                           // print('rebuild seq');
-                          return AnimatedContainer(
-                              duration: const Duration(seconds: 1),
+                          return Container(
                               height: MediaQuery.of(context).size.shortestSide /
                                   pastValue,
                               width: MediaQuery.of(context).size.shortestSide /
                                   pastValue,
                               decoration: BoxDecoration(
-                                color: turnValue == Turn.shuffle
-                                    ? Colors.white
-                                    : widget.color,
+                                color: widget.color,
                                 shape: BoxShape.circle,
                                 boxShadow: seqValue == widget.id || highlight
                                     ? [
@@ -97,9 +97,9 @@ class _PastilleState extends State<Pastille> {
                                       ],
                               ));
                         }),
-                  );
-                });
-          }),
-    );
+                  ),
+                );
+              });
+        });
   }
 }
