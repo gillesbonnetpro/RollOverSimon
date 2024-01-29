@@ -38,8 +38,6 @@ class Referee {
   }
 
   Future<void> addSequence() async {
-    bool isRepeted = true;
-
     if (_refSequence.length > _pastNb && _pastNb < 10) {
       print('LEVEL !!! ');
       turnNotifier.value = Turn.rotation;
@@ -52,11 +50,18 @@ class Referee {
       });
     }
 
-    // empeche d'avoir 3 fois le meme numéro de suite
+    /*  // empeche d'avoir 3 fois le meme numéro de suite
     int next = 0;
+    bool isRepeted = true;
     while (isRepeted) {
       next = math.Random.secure().nextInt(_pastNb);
       int length = _refSequence.length;
+      print('nb element ${_refSequence.length}');
+      if (length > 2) {
+        print('element -1  ${_refSequence[length - 1]}');
+        print('element -2  ${_refSequence[length - 2]}');
+      }
+
       if (length > 2 &&
           (_refSequence[length - 1] == _refSequence[length - 2])) {
         if (next != _refSequence[length]) {
@@ -65,9 +70,9 @@ class Referee {
       } else {
         isRepeted = false;
       }
-      print('repeted $isRepeted');
-    }
-    _refSequence.add(next);
+      print('repeted $isRepeted'); 
+    }*/
+    _refSequence.add(math.Random.secure().nextInt(_pastNb));
     sendSeq();
   }
 
