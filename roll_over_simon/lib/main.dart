@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.rubikDistressedTextTheme(),
+        textTheme: GoogleFonts.rubikBubblesTextTheme(),
         buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
       ),
       home: Scaffold(

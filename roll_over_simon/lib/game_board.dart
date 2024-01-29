@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/player_board.dart';
 import 'package:roll_over_simon/referee.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:ui' as ui;
+import 'package:flutter/widgets.dart' as widgets;
 
 class GameBoard extends StatefulWidget {
   GameBoard({super.key});
@@ -17,6 +20,7 @@ class _GameBoardState extends State<GameBoard> {
   @override
   void initState() {
     _referee = Referee();
+
     super.initState();
   }
 
@@ -24,6 +28,19 @@ class _GameBoardState extends State<GameBoard> {
   Widget build(BuildContext context) {
     double boardSize = MediaQuery.of(context).size.shortestSide * 0.75;
     double headSize = MediaQuery.of(context).size.shortestSide * 0.25;
+
+    Future<ui.Image> loadUiImage(String imageAssetPath) async {
+      widgets.Image widgetsImage = widgets.Image.asset(imageAssetPath);
+      Completer<ui.Image> completer = Completer<ui.Image>();
+      widgetsImage.image
+          .resolve(const widgets.ImageConfiguration())
+          .addListener(
+              widgets.ImageStreamListener((widgets.ImageInfo info, bool _) {
+        completer.complete(info.image);
+      }));
+      return completer.future;
+    }
+
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -47,10 +64,28 @@ class _GameBoardState extends State<GameBoard> {
                       );
                     case Turn.player:
                       return FittedBox(
-                        child: Text(
-                          'A vous de jouer',
-                          style: TextStyle().copyWith(fontSize: 50),
-                        ),
+                        child: FutureBuilder<ui.Image>(
+                            future: loadUiImage('assets/soleil.jpg'),
+                            builder: (context, snapshot) {
+                              return snapshot.hasData
+                                  ? ShaderMask(
+                                      blendMode: BlendMode.srcATop,
+                                      shaderCallback: (bounds) => ImageShader(
+                                          snapshot.data!,
+                                          TileMode.clamp,
+                                          TileMode.clamp,
+                                          Matrix4.identity().storage),
+                                      child: Text(
+                                        'A vous de jouer',
+                                        style:
+                                            TextStyle().copyWith(fontSize: 50),
+                                      ),
+                                    )
+                                  : Text(
+                                      'A vous de jouer',
+                                      style: TextStyle().copyWith(fontSize: 50),
+                                    );
+                            }),
                       );
                     case Turn.rotation:
                       return FittedBox(
@@ -60,7 +95,7 @@ class _GameBoardState extends State<GameBoard> {
                         ),
                       );
                     default:
-                      return Container();
+                      return Container(height: headSize);
                   }
                 },
               ),
