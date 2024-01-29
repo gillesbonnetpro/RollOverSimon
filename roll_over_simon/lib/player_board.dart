@@ -32,7 +32,7 @@ class _PlayerBoardState extends State<PlayerBoard> {
     super.initState();
   }
 
-  List<Pastille> getPastList(int pastNb) {
+  List<Pastille> getPastList(int pastNb, Turn turn) {
     List<Pastille> pastList = [];
 
     pastList.clear();
@@ -40,14 +40,22 @@ class _PlayerBoardState extends State<PlayerBoard> {
     for (var i = 0; i < pastNb; i++) {
       pastList.add(Pastille(id: i, color: _colorList[i]));
     }
+
+    if (turn == Turn.player) {
+      pastList.shuffle();
+      pastList
+          .map((past) => Pastille(
+              id: past.id, color: past.color, listRank: pastList.indexOf(past)))
+          .toList();
+    }
     return pastList;
   }
 
-  void increaseRotationNb() {
+  /* void increaseRotationNb() {
     setState(() {
       rotationNb += 1.25;
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +66,13 @@ class _PlayerBoardState extends State<PlayerBoard> {
           return ValueListenableBuilder<Turn>(
               valueListenable: turnNotifier,
               builder: (BuildContext context, Turn turnValue, child) {
-                List<Pastille> list = getPastList(pastValue);
+                List<Pastille> list = getPastList(pastValue, turnValue);
                 return AnimatedRotation(
                   duration: const Duration(seconds: 1),
-                  turns: turnValue == Turn.shuffle || turnValue == Turn.player
+                  /* turns: turnValue == Turn.shuffle || turnValue == Turn.player
                       ? math.Random.secure().nextDouble() + 0.25
-                      : 0,
+                      : 0, */
+                  turns: 0,
                   child: Stack(
                     children: list,
                   ),
