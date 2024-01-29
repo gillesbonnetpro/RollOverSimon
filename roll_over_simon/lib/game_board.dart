@@ -3,6 +3,7 @@ import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/player_board.dart';
 import 'package:roll_over_simon/referee.dart';
 import 'package:roll_over_simon/my_shader.dart';
+import 'package:roll_over_simon/start_button.dart';
 
 class GameBoard extends StatefulWidget {
   const GameBoard({super.key});
@@ -35,12 +36,12 @@ class _GameBoardState extends State<GameBoard> {
           image: const AssetImage('assets/techno.jpg'),
           height: screenHeight,
           width: screenwidth,
-          fit: BoxFit.fil,
+          fit: BoxFit.fill,
         ),
         Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
               SizedBox(
@@ -52,18 +53,26 @@ class _GameBoardState extends State<GameBoard> {
                     builder: (BuildContext context, Turn turnValue, child) {
                       switch (turnValue) {
                         case Turn.over:
-                          return Center(
-                            child: ElevatedButton(
-                              onPressed: () => _referee.initGame(),
-                              child: const Text('Démarrer'),
-                            ),
+                          return const Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: FittedBox(
+                                  child: Text('PERDU'),
+                                ),
+                              ),
+                              Center(child: StartButton()),
+                            ],
+                          );
+                        case Turn.start:
+                          return const Center(
+                            child: StartButton(),
                           );
                         case Turn.player:
                           return const FittedBox(
-                            child: MyShader(
-                              path: 'assets/techno.jpg',
-                              child: Text('A vous de jouer'),
-                            ),
+                            child: Text('A vous de jouer'),
                           );
                         case Turn.rotation:
                           return FittedBox(

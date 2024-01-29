@@ -14,7 +14,10 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.rubikBubblesTextTheme(),
+        textTheme: GoogleFonts.rubik80sFadeTextTheme()
+            .apply(displayColor: Colors.amber, bodyColor: Colors.amber),
+        colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.blue, accentColor: Colors.amber),
         buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
       ),
       home: const Scaffold(

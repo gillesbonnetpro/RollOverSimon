@@ -10,7 +10,7 @@ class Referee {
   }
 
   Referee._internal() {
-    initGame();
+    // initGame();
   }
 
   // variables
@@ -26,6 +26,7 @@ class Referee {
 
   void initGame() {
     _turn = Turn.referee;
+    turnNotifier.value = _turn;
     _refSequence = [];
     _plaSequence = [];
 
@@ -36,7 +37,7 @@ class Referee {
   }
 
   Future<void> addSequence() async {
-    if (_refSequence.length > 2 && _pastNb < 9) {
+    if (_refSequence.length > _pastNb && _pastNb < 10) {
       print('LEVEL !!! ');
       turnNotifier.value = Turn.rotation;
       await Future.delayed(const Duration(seconds: 1), () {
@@ -52,7 +53,7 @@ class Referee {
   }
 
   Future<void> sendSeq() async {
-    int speed = 500 - (_refSequence.length * _pastNb);
+    int speed = 750 - (_refSequence.length * _pastNb);
     if (_refSequence.length == 1) {
       await Future.delayed(const Duration(seconds: 1), () {});
     }
