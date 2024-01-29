@@ -14,8 +14,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          textTheme: GoogleFonts.moiraiOneTextTheme(),
-          buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme())),
+        textTheme: GoogleFonts.rubikDistressedTextTheme(),
+        buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
+      ),
       home: Scaffold(
         body: GameBoard(),
       ),

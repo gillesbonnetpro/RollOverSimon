@@ -22,48 +22,58 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
-    double boardWidth = MediaQuery.of(context).size.shortestSide * 0.75;
+    double boardSize = MediaQuery.of(context).size.shortestSide * 0.75;
+    double headSize = MediaQuery.of(context).size.shortestSide * 0.25;
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () => _referee.morePast(),
-                child: Text('pastille'),
+          SizedBox(
+            height: headSize,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ValueListenableBuilder<Turn>(
+                valueListenable: turnNotifier,
+                builder: (BuildContext context, Turn turnValue, child) {
+                  switch (turnValue) {
+                    case Turn.over:
+                      return Center(
+                        child: ElevatedButton(
+                          onPressed: () => _referee.initGame(),
+                          child: const Text('Démarrer'),
+                        ),
+                      );
+                    case Turn.player:
+                      return FittedBox(
+                        child: Text(
+                          'A vous de jouer',
+                          style: TextStyle().copyWith(fontSize: 50),
+                        ),
+                      );
+                    case Turn.rotation:
+                      return FittedBox(
+                        child: Text(
+                          'Changement de niveau',
+                          style: TextStyle().copyWith(fontSize: 50),
+                        ),
+                      );
+                    default:
+                      return Container();
+                  }
+                },
               ),
-              ElevatedButton(
-                onPressed: () => _referee.addSequence(),
-                child: Text('sequence'),
-              ),
-              ElevatedButton(
-                onPressed: () => turnNotifier.value == Turn.shuffle
-                    ? turnNotifier.value = Turn.over
-                    : turnNotifier.value = Turn.shuffle,
-                child: Text('shuffle'),
-              ),
-            ],
-          ),
-          ValueListenableBuilder<Turn>(
-            valueListenable: turnNotifier,
-            builder: (BuildContext context, Turn value, child) {
-              return Text(
-                '$value',
-                style: GoogleFonts.moiraiOne(fontSize: 50),
-              );
-            },
+            ),
           ),
           SizedBox(
-            height: boardWidth,
-            width: boardWidth,
+            height: boardSize,
+            width: boardSize,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 constraints:
-                    BoxConstraints(maxHeight: boardWidth, maxWidth: boardWidth),
+                    BoxConstraints(maxHeight: boardSize, maxWidth: boardSize),
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromARGB(255, 208, 207, 207),

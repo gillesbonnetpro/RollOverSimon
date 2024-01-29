@@ -1,11 +1,6 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:roll_over_simon/notifier.dart';
-import 'package:roll_over_simon/pastille_old.dart';
-import 'package:roll_over_simon/ui_data.dart';
 import 'dart:math' as math;
-import 'package:rxdart/rxdart.dart';
 
 class Referee {
   static final Referee _singleton = Referee._internal();
@@ -17,19 +12,6 @@ class Referee {
   Referee._internal() {
     initGame();
   }
-
-  final List<MaterialColor> _colorList = [
-    Colors.blue,
-    Colors.pink,
-    Colors.yellow,
-    Colors.teal,
-    Colors.brown,
-    Colors.deepOrange,
-    Colors.purple,
-    Colors.green,
-    Colors.indigo,
-    Colors.lightBlue,
-  ];
 
   // variables
   late int _pastNb;
