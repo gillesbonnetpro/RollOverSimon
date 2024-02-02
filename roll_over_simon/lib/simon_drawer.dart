@@ -12,10 +12,12 @@ class SimonDrawer extends StatefulWidget {
 
 class _SimonDrawerState extends State<SimonDrawer> {
   late int _initialLevel;
+  late int _speed;
 
   @override
   void initState() {
     _initialLevel = pastNumberNotifier.value;
+    _speed = speedNotifier.value;
     super.initState();
   }
 
@@ -50,7 +52,25 @@ class _SimonDrawerState extends State<SimonDrawer> {
                   turnNotifier.value = Turn.start;
                 }),
               ),
-              Text('Niveau de départ: $_initialLevel')
+              Text('Niveau de départ'),
+              Divider(thickness: 5, color: Theme.of(context).primaryColor),
+              NumberPicker(
+                itemWidth: 55,
+                axis: Axis.horizontal,
+                value: _speed,
+                decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).focusColor)),
+                minValue: 50,
+                maxValue: 950,
+                step: 50,
+                onChanged: (value) => setState(() {
+                  _speed = value;
+                  speedNotifier.value = _speed;
+                  turnNotifier.value = Turn.start;
+                }),
+              ),
+              Text('Vitesse (+ petit = + rapide)'),
+              Divider(thickness: 5, color: Theme.of(context).primaryColor),
             ],
           ),
         ),

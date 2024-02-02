@@ -77,7 +77,7 @@ class Referee {
   }
 
   Future<void> sendSeq() async {
-    int speed = 500 - (_refSequence.length * _pastNb);
+    int speed = speedNotifier.value - (_refSequence.length * _pastNb);
     if (_refSequence.length == 1) {
       await Future.delayed(const Duration(seconds: 1));
     }
