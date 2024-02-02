@@ -38,7 +38,9 @@ class Referee {
   }
 
   Future<void> addSequence() async {
-    if (_refSequence.length > _pastNb && _pastNb < 10) {
+    if (_refSequence.length > _pastNb &&
+        _pastNb < 10 &&
+        levelWantedNotifier.value) {
       print('LEVEL !!! ');
       turnNotifier.value = Turn.rotation;
       await Future.delayed(const Duration(seconds: 1), () {
@@ -50,28 +52,6 @@ class Referee {
       });
     }
 
-    /*  // empeche d'avoir 3 fois le meme numéro de suite
-    int next = 0;
-    bool isRepeted = true;
-    while (isRepeted) {
-      next = math.Random.secure().nextInt(_pastNb);
-      int length = _refSequence.length;
-      print('nb element ${_refSequence.length}');
-      if (length > 2) {
-        print('element -1  ${_refSequence[length - 1]}');
-        print('element -2  ${_refSequence[length - 2]}');
-      }
-
-      if (length > 2 &&
-          (_refSequence[length - 1] == _refSequence[length - 2])) {
-        if (next != _refSequence[length]) {
-          isRepeted = false;
-        }
-      } else {
-        isRepeted = false;
-      }
-      print('repeted $isRepeted'); 
-    }*/
     _refSequence.add(math.Random.secure().nextInt(_pastNb));
     sendSeq();
   }
@@ -88,9 +68,13 @@ class Referee {
           () => sequenceNotifier.value = null);
     }
     print('ref    $_refSequence');
-    await Future.delayed(Duration(seconds: 1));
-    turnNotifier.value = Turn.shuffle;
-    await Future.delayed(Duration(seconds: 1));
+    print('shuffle ${shuffleWantedNotifier.value}');
+    if (shuffleWantedNotifier.value) {
+      await Future.delayed(Duration(seconds: 1));
+      turnNotifier.value = Turn.shuffle;
+      await Future.delayed(Duration(seconds: 1));
+    }
+
     turnNotifier.value = Turn.player;
     /* await Future.delayed(
         -const Duration(seconds: 2), () => turnNotifier.value = Turn.shuffle);

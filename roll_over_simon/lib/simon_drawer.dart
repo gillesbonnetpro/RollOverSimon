@@ -13,12 +13,16 @@ class SimonDrawer extends StatefulWidget {
 class _SimonDrawerState extends State<SimonDrawer> {
   late int _initialLevel;
   late int _speed;
+  late bool _shuffleWanted;
+  late bool _levelWanted;
   late Widget _divider;
 
   @override
   void initState() {
     _initialLevel = pastNumberNotifier.value;
     _speed = speedNotifier.value;
+    _shuffleWanted = shuffleWantedNotifier.value;
+    _levelWanted = levelWantedNotifier.value;
 
     super.initState();
   }
@@ -75,7 +79,25 @@ class _SimonDrawerState extends State<SimonDrawer> {
                 }),
               ),
               const Text('Vitesse (+ petit = + rapide)'),
-              _divider
+              _divider,
+              Text('mélange des positions'),
+              Switch(
+                value: _shuffleWanted,
+                onChanged: (value) => setState(() {
+                  _shuffleWanted = value;
+                  shuffleWantedNotifier.value = value;
+                  turnNotifier.value = Turn.start;
+                }),
+              ),
+              _divider,
+              Text('changements de niveau'),
+              Switch(
+                  value: _levelWanted,
+                  onChanged: (value) => setState(() {
+                        _levelWanted = value;
+                        levelWantedNotifier.value = value;
+                        turnNotifier.value = Turn.start;
+                      }))
             ],
           ),
         ),

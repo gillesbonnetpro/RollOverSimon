@@ -22,7 +22,7 @@ class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
     double boardSize = MediaQuery.of(context).size.shortestSide * 0.75;
-    double headSize = MediaQuery.of(context).size.shortestSide * 0.20;
+    double headSize = 50;
 
     return Stack(
       children: [
@@ -31,6 +31,13 @@ class _GameBoardState extends State<GameBoard> {
             'assets/starfield.jpg',
             repeat: ImageRepeat.repeat,
           ),
+        ),
+        IconButton(
+          icon: const Icon(
+            Icons.settings,
+            color: Colors.white,
+          ),
+          onPressed: () => Scaffold.of(context).openDrawer(),
         ),
         Center(
           child: Column(
@@ -42,67 +49,72 @@ class _GameBoardState extends State<GameBoard> {
                 height: headSize,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: ValueListenableBuilder<Turn>(
-                    valueListenable: turnNotifier,
-                    builder: (BuildContext context, Turn turnValue, child) {
-                      switch (turnValue) {
-                        case Turn.over:
-                          return const Center(
-                            child: StartButton(),
-                          );
-                        case Turn.start:
-                          return const Center(
-                            child: StartButton(),
-                          );
-                        case Turn.player:
-                          return const FittedBox(
-                            child: Text('A vous de jouer'),
-                          );
-                        case Turn.rotation:
-                          return const FittedBox(
-                            child: FittedBox(
-                              child: Text('Changement de niveau'),
-                            ),
-                          );
-                        default:
-                          return Container(height: headSize);
-                      }
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: SizedBox(
-                    height: boardSize,
-                    width: boardSize,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: PlayerBoard(),
-                        ),
-                        ValueListenableBuilder<Turn>(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: ValueListenableBuilder<Turn>(
                           valueListenable: turnNotifier,
                           builder:
                               (BuildContext context, Turn turnValue, child) {
-                            return turnValue == Turn.over
-                                ? FittedBox(
-                                    fit: BoxFit.fill,
-                                    child: SuroundedText(
-                                      text: 'Perdu',
-                                      style: GoogleFonts.rubikBubbles(
-                                          fontSize: boardSize * 0.8,
-                                          color:
-                                              Theme.of(context).primaryColor),
-                                    ),
-                                  )
-                                : Container();
+                            switch (turnValue) {
+                              case Turn.over:
+                                return const Center(
+                                  child: StartButton(),
+                                );
+                              case Turn.start:
+                                return const Center(
+                                  child: StartButton(),
+                                );
+                              case Turn.player:
+                                return const FittedBox(
+                                  child: Text('A vous de jouer'),
+                                );
+                              case Turn.rotation:
+                                return const FittedBox(
+                                  child: FittedBox(
+                                    child: Text('Changement de niveau'),
+                                  ),
+                                );
+                              default:
+                                return Container(height: headSize);
+                            }
                           },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: SizedBox(
+                  height: boardSize,
+                  width: boardSize,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: PlayerBoard(),
+                      ),
+                      ValueListenableBuilder<Turn>(
+                        valueListenable: turnNotifier,
+                        builder: (BuildContext context, Turn turnValue, child) {
+                          return turnValue == Turn.over
+                              ? FittedBox(
+                                  fit: BoxFit.fill,
+                                  child: SuroundedText(
+                                    text: 'Perdu',
+                                    style: GoogleFonts.rubikBubbles(
+                                        fontSize: boardSize * 0.8,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                )
+                              : Container();
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),

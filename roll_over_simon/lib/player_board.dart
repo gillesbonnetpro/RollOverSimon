@@ -40,7 +40,7 @@ class _PlayerBoardState extends State<PlayerBoard> {
       pastList.add(Pastille(id: i, color: _colorList[i]));
     }
 
-    if (turn == Turn.player) {
+    if (turn == Turn.player && shuffleWantedNotifier.value) {
       pastList.shuffle();
       pastList
           .map((past) => Pastille(

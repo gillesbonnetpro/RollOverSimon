@@ -15,20 +15,18 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.rubik80sFadeTextTheme()
-            .apply(displayColor: Colors.amber, bodyColor: Colors.amber),
-        colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.blue, accentColor: Colors.amber),
-        buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
-      ),
-      home: SafeArea(
+          textTheme: GoogleFonts.rubik80sFadeTextTheme()
+              .apply(displayColor: Colors.amber, bodyColor: Colors.amber),
+          colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.blue, accentColor: Colors.amber),
+          buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.accent),
+          appBarTheme: AppBarTheme(
+            color: Colors.blue.shade900,
+          )),
+      home: const SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            title: const Text('Roll Over Simon'),
-          ),
-          body: const GameBoard(),
-          drawer: const SimonDrawer(),
+          body: GameBoard(),
+          drawer: SimonDrawer(),
         ),
       ),
     );
