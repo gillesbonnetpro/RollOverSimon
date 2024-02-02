@@ -13,16 +13,20 @@ class SimonDrawer extends StatefulWidget {
 class _SimonDrawerState extends State<SimonDrawer> {
   late int _initialLevel;
   late int _speed;
+  late Widget _divider;
 
   @override
   void initState() {
     _initialLevel = pastNumberNotifier.value;
     _speed = speedNotifier.value;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _divider = Divider(thickness: 5, color: Theme.of(context).primaryColor);
+
     return Theme(
       data: ThemeData(
         textTheme: GoogleFonts.aBeeZeeTextTheme(),
@@ -38,6 +42,7 @@ class _SimonDrawerState extends State<SimonDrawer> {
               const FittedBox(
                 child: Text('Paramètres'),
               ),
+              _divider,
               NumberPicker(
                 itemWidth: 50,
                 axis: Axis.horizontal,
@@ -52,8 +57,8 @@ class _SimonDrawerState extends State<SimonDrawer> {
                   turnNotifier.value = Turn.start;
                 }),
               ),
-              Text('Niveau de départ'),
-              Divider(thickness: 5, color: Theme.of(context).primaryColor),
+              const Text('Niveau de départ'),
+              _divider,
               NumberPicker(
                 itemWidth: 55,
                 axis: Axis.horizontal,
@@ -69,8 +74,8 @@ class _SimonDrawerState extends State<SimonDrawer> {
                   turnNotifier.value = Turn.start;
                 }),
               ),
-              Text('Vitesse (+ petit = + rapide)'),
-              Divider(thickness: 5, color: Theme.of(context).primaryColor),
+              const Text('Vitesse (+ petit = + rapide)'),
+              _divider
             ],
           ),
         ),

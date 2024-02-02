@@ -4,6 +4,7 @@ import 'package:roll_over_simon/my_shader.dart';
 import 'package:roll_over_simon/notifier.dart';
 import 'package:roll_over_simon/player_board.dart';
 import 'package:roll_over_simon/start_button.dart';
+import 'package:roll_over_simon/surounded_text.dart';
 
 class GameBoard extends StatefulWidget {
   const GameBoard({super.key});
@@ -89,34 +90,17 @@ class _GameBoardState extends State<GameBoard> {
                             return turnValue == Turn.over
                                 ? FittedBox(
                                     fit: BoxFit.fill,
-                                    child: Text(
-                                      'Perdu',
+                                    child: SuroundedText(
+                                      text: 'Perdu',
                                       style: GoogleFonts.rubikBubbles(
                                           fontSize: boardSize * 0.8,
-                                          color: Colors.black),
+                                          color:
+                                              Theme.of(context).primaryColor),
                                     ),
                                   )
                                 : Container();
                           },
                         ),
-                        ValueListenableBuilder<Turn>(
-                          valueListenable: turnNotifier,
-                          builder:
-                              (BuildContext context, Turn turnValue, child) {
-                            return turnValue == Turn.over
-                                ? FittedBox(
-                                    fit: BoxFit.fill,
-                                    child: Text(
-                                      'Perdu',
-                                      style: GoogleFonts.rubikBubbles(
-                                          fontSize: boardSize * 0.50,
-                                          color: Theme.of(context)
-                                              .primaryColorDark),
-                                    ),
-                                  )
-                                : Container();
-                          },
-                        )
                       ],
                     ),
                   ),
