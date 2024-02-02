@@ -40,13 +40,15 @@ class _PlayerBoardState extends State<PlayerBoard> {
       pastList.add(Pastille(id: i, color: _colorList[i]));
     }
 
-    /*  if (turn == Turn.player) {
+    if (turn == Turn.player) {
       pastList.shuffle();
       pastList
           .map((past) => Pastille(
-              id: past.id, color: past.color, listRank: pastList.indexOf(past)))
+              id: (past as Pastille).id,
+              color: past.color,
+              listRank: pastList.indexOf(past)))
           .toList();
-    } */
+    }
     return pastList;
   }
 
@@ -60,6 +62,7 @@ class _PlayerBoardState extends State<PlayerBoard> {
               valueListenable: turnNotifier,
               builder: (BuildContext context, Turn turnValue, child) {
                 List<Widget> list = getPastList(pastValue, turnValue);
+
                 return Stack(
                   children: [
                     const GamePlato(),

@@ -86,15 +86,9 @@ class _PastilleState extends State<Pastille> {
                                         const BoxShadow(
                                             color: Color.fromARGB(
                                                 255, 104, 103, 103),
-                                            offset: Offset(-3, -3),
-                                            blurRadius: 2.0,
-                                            spreadRadius: 2.0),
-                                        const BoxShadow(
-                                            color: Color.fromARGB(
-                                                255, 104, 103, 103),
-                                            offset: Offset(3, 3),
-                                            blurRadius: 2.0,
-                                            spreadRadius: 2.0)
+                                            offset: Offset(0, 0),
+                                            blurRadius: 1.0,
+                                            spreadRadius: 5.0),
                                       ],
                               ));
                         }),

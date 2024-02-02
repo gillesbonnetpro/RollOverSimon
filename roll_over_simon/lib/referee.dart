@@ -27,11 +27,11 @@ class Referee {
   void initGame() {
     print('INIT');
     _turn = Turn.referee;
+    _pastNb = pastNumberNotifier.value;
     turnNotifier.value = _turn;
     _refSequence = [];
     _plaSequence = [];
 
-    _pastNb = 4;
     pastNumberNotifier.value = _pastNb;
 
     addSequence();
@@ -77,9 +77,9 @@ class Referee {
   }
 
   Future<void> sendSeq() async {
-    int speed = 750 - (_refSequence.length * _pastNb);
+    int speed = 500 - (_refSequence.length * _pastNb);
     if (_refSequence.length == 1) {
-      await Future.delayed(const Duration(seconds: 1), () {});
+      await Future.delayed(const Duration(seconds: 1));
     }
     for (int i in _refSequence) {
       await Future.delayed(
@@ -88,10 +88,14 @@ class Referee {
           () => sequenceNotifier.value = null);
     }
     print('ref    $_refSequence');
-    await Future.delayed(
-        -const Duration(seconds: 2), () => turnNotifier.value = Turn.shuffle);
+    await Future.delayed(Duration(seconds: 1));
+    turnNotifier.value = Turn.shuffle;
+    await Future.delayed(Duration(seconds: 1));
     turnNotifier.value = Turn.player;
     /* await Future.delayed(
+        -const Duration(seconds: 2), () => turnNotifier.value = Turn.shuffle);
+    turnNotifier.value = Turn.player;
+     */ /* await Future.delayed(
         const Duration(seconds: 2), () => turnNotifier.value = Turn.player); */
   }
 
@@ -105,6 +109,7 @@ class Referee {
 
       if (_plaSequence.last != _refSequence[_plaSequence.length - 1]) {
         turnNotifier.value = Turn.over;
+        print('referee : perdu');
         _refSequence.clear();
         _plaSequence.clear();
       } else {
